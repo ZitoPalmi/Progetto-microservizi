@@ -1,0 +1,72 @@
+version: '3'
+
+services:
+
+  #Book Microservices#
+  book:
+    build:
+      context: ./Books
+    container_name: book
+    command: python Books/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - dbBooks
+  #DB Book Microservices#
+  dbBooks:
+    container_name: BookDb
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./db/:/root/db/
+    ports:
+      - "3306:3306"
+
+  #Customer Microservices#
+  Customers:
+    build:
+      context: ./Customers
+    container_name: Customers
+    command: python Customers/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - dbCustomers
+  #DB Customer Microservices#
+  dbCustomers:
+    container_name: CustomerDb
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./db/:/root/db/
+    ports:
+      - "3307:3306"
+
+  #Order Microservices#
+  Order:
+    build:
+      context: ./Order
+    container_name: order
+    command: python Order/manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
+    depends_on:
+      - dbOrder
+  #DB Order Microservices#
+  dbOrder:
+    container_name: OrderDb
+    image: nouchka/sqlite3:latest
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./db/:/root/db/
+    ports:
+      - "3308:3306"
